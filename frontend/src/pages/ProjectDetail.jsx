@@ -7,6 +7,7 @@ import PolarCalculator from './PolarCalculator'
 import AreaCalculator from './AreaCalculator'
 import MapView from './MapView'
 import SurveyDiagram from '../components/SurveyDiagram'
+import CoordinateConverter from './CoordinateConverter'
 import { downloadDXF } from '../utils/dxfExport'
 function calculateSegments(pts) {
   if (!pts || pts.length < 2) return []
@@ -25,7 +26,7 @@ function calculateSegments(pts) {
   return segs
 }
 
-const TABS = ['Points', 'Join', 'Polar', 'Area', 'Map', 'Diagram', 'Timeline']
+const TABS = ['Points', 'Join', 'Polar', 'Area', 'Map', 'Diagram', 'Timeline', 'Convert']
 
 function downloadCSV(headers, rows, filename) {
   const csv = [headers.join(','), ...rows.map(r => headers.map(h => r[h]).join(','))].join('\n')
@@ -310,6 +311,7 @@ export default function ProjectDetail() {
       case 'Polar': return <PolarCalculator points={points} projectId={id} onPointAdded={loadPoints} />
       case 'Area': return <AreaCalculator points={points} />
       case 'Map': return <MapView points={points} project={project} projectId={id} onPointAdded={loadPoints} />
+      case 'Convert': return <CoordinateConverter points={points} project={project} />
       case 'Diagram': {
         const diagramPoints = diagramPointIds.size > 0 ? points.filter(p => diagramPointIds.has(p.id)) : points
         return diagramPoints.length < 2
