@@ -11,7 +11,7 @@ function downloadCSV(headers, rows, filename) {
   URL.revokeObjectURL(a.href)
 }
 
-export default function AreaCalculator({ points }) {
+export default function AreaCalculator({ points, onShowDiagram }) {
   const [selected, setSelected] = useState([])
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
@@ -101,19 +101,29 @@ export default function AreaCalculator({ points }) {
         <div className="mt-6 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 p-6 rounded-lg">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold text-lg text-green-800 dark:text-green-300">Area Result</h4>
-            <button onClick={() => downloadCSV(
-              ['Area_sqm', 'Area_display'],
-              [{ Area_sqm: result.areaSqm, Area_display: result.display }],
-              'area_result.csv'
-            )} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-              Download CSV
-            </button>
+            <div className="flex gap-2">
+              <button onClick={() => {
+                const pts = selected.map(id => points.find(p => p.id === parseInt(id))).filter(Boolean)
+                const csv = ['name,x,y']
+                pts.forEach(p => csv.push(`${p.name},${p.x},${p.y}`))
+                const blob = new Blob([csv.join('\n')], { type: 'text/csv' })
+                const a = document.createElement('a')
+                a.href = URL.createObjectURL(blob); a.download = 'area_points.csv'; a.click()
+              }} className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition">Points CSV</button>
+              <button onClick={() => downloadCSV(
+                ['Area_sqm', 'Area_display'],
+                [{ Area_sqm: result.areaSqm, Area_display: result.display }],
+                'area_result.csv'
+              )} className="text-xs bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition">Download CSV</button>
+              {onShowDiagram && selected.length >= 2 && (
+                <button onClick={() => onShowDiagram(selected)}
+                  className="text-xs bg-purple-600 text-white px-3 py-1.5 rounded hover:bg-purple-700 transition">Show on Diagram</button>
+              )}
+            </div>
           </div>
           <div className="text-3xl font-bold text-green-700 dark:text-green-400">{result.display}</div>
           {result.areaHa && (
-            <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              {result.areaSqm} m² = {result.areaHa} ha
-            </div>
+            <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">{result.areaSqm} m² = {result.areaHa} ha</div>
           )}
           {!result.areaHa && (
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">{result.areaSqm} square meters</div>

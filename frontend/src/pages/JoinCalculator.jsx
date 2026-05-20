@@ -13,7 +13,7 @@ function downloadCSV(headers, rows, filename) {
   URL.revokeObjectURL(a.href)
 }
 
-export default function JoinCalculator({ points }) {
+export default function JoinCalculator({ points, onShowDiagram }) {
   const [mode, setMode] = useState('Single')
   const [selectedA, setSelectedA] = useState('')
   const [selectedB, setSelectedB] = useState('')
@@ -166,13 +166,27 @@ export default function JoinCalculator({ points }) {
         <div className="mt-6">
           <div className="flex items-center justify-between mb-2">
             <h4 className="font-semibold text-gray-800 dark:text-gray-200">Results</h4>
-            <button onClick={() => downloadCSV(
-              ['From', 'To', 'DeltaX', 'DeltaY', 'Distance', 'Bearing'],
-              results.joins.map(j => ({ From: j.from, To: j.to, DeltaX: j.dx, DeltaY: j.dy, Distance: j.distance, Bearing: j.bearingDMS })),
-              'join_results.csv'
-            )} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-              Download CSV
-            </button>
+            <div className="flex gap-2">
+              <button onClick={() => downloadCSV(
+                ['From', 'To', 'DeltaX', 'DeltaY', 'Distance', 'Bearing'],
+                results.joins.map(j => ({ From: j.from, To: j.to, DeltaX: j.dx, DeltaY: j.dy, Distance: j.distance, Bearing: j.bearingDMS })),
+                'join_results.csv'
+              )} className="text-xs bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition">Download CSV</button>
+              {onShowDiagram && (() => {
+                const ids = results.joins.flatMap(j => {
+                  const f = points.find(p => p.name === j.from); const t = points.find(p => p.name === j.to)
+                  return f ? [f.id] : []; // use spread for both
+                })
+                const allIds = [...new Set(results.joins.flatMap(j => {
+                  const f = points.find(p => p.name === j.from); const t = points.find(p => p.name === j.to)
+                  return [f?.id, t?.id].filter(Boolean)
+                }))]
+                return allIds.length >= 2 ? (
+                  <button onClick={() => onShowDiagram(allIds)}
+                    className="text-xs bg-purple-600 text-white px-3 py-1.5 rounded hover:bg-purple-700 transition">Show on Diagram</button>
+                ) : null
+              })()}
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">

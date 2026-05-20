@@ -15,7 +15,7 @@ function convert(srcProj, dstProj, x, y) {
   return { x: x2, y: y2, lng: out[0], lat: out[1] }
 }
 
-export default function CoordinateConverter({ points, project }) {
+export default function CoordinateConverter({ points, project, onShowDiagram }) {
   const [srcId, setSrcId] = useState(project?.coordinate_system || 'EPSG:32736')
   const [srcZone, setSrcZone] = useState(project?.lo_or_zone || '')
   const [dstId, setDstId] = useState('EPSG:4326')

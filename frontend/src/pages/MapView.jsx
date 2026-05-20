@@ -127,7 +127,7 @@ function downloadCSV(headers, rows, filename) {
   URL.revokeObjectURL(a.href)
 }
 
-export default function MapView({ points, project, projectId, onPointAdded }) {
+export default function MapView({ points, project, projectId, onPointAdded, onShowDiagram }) {
   const [selectedIds, setSelectedIds] = useState([])
   const [addMode, setAddMode] = useState(false)
   const [joinResult, setJoinResult] = useState(null)
@@ -254,6 +254,12 @@ export default function MapView({ points, project, projectId, onPointAdded }) {
               {addMode ? 'Click Map' : 'Off'}
             </button>
           </div>
+          {onShowDiagram && selectedIds.length >= 2 && (
+            <button onClick={() => onShowDiagram(selectedIds)}
+              className="px-3 py-1.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition">
+              Show on Diagram
+            </button>
+          )}
           <button onClick={clearSelection}
             className="px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded text-xs hover:bg-red-200 dark:hover:bg-red-900/50 transition">
             Clear Selection

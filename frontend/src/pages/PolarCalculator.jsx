@@ -33,7 +33,7 @@ function downloadCSV(headers, rows, filename) {
   URL.revokeObjectURL(a.href)
 }
 
-export default function PolarCalculator({ points, projectId, onPointAdded }) {
+export default function PolarCalculator({ points, projectId, onPointAdded, onShowDiagram }) {
   const [mode, setMode] = useState('Single')
   const [origin, setOrigin] = useState('')
   const [bearing, setBearing] = useState(emptyBearing())
@@ -265,24 +265,26 @@ export default function PolarCalculator({ points, projectId, onPointAdded }) {
         <div className="mt-6">
           <div className="flex items-center justify-between mb-2">
             <h4 className="font-semibold text-gray-800 dark:text-gray-200">Results</h4>
-            {results.point && (
-              <button onClick={() => downloadCSV(
-                ['Name', 'X', 'Y'],
-                [{ Name: results.point.name, X: results.point.x, Y: results.point.y }],
-                'polar_single.csv'
-              )} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                Download CSV
-              </button>
-            )}
-            {results.points && (
-              <button onClick={() => downloadCSV(
-                ['Name', 'X', 'Y', 'Bearing', 'Distance'],
-                results.points.map(p => ({ Name: p.name, X: p.x, Y: p.y, Bearing: p.bearingDeg?.toFixed(4), Distance: p.distance })),
-                'polar_results.csv'
-              )} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                Download CSV
-              </button>
-            )}
+            <div className="flex gap-2">
+              {results.point && (
+                <button onClick={() => downloadCSV(
+                  ['Name', 'X', 'Y'],
+                  [{ Name: results.point.name, X: results.point.x, Y: results.point.y }],
+                  'polar_single.csv'
+                )} className="text-xs bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition">
+                  Download CSV
+                </button>
+              )}
+              {results.points && (
+                <button onClick={() => downloadCSV(
+                  ['Name', 'X', 'Y', 'Bearing', 'Distance'],
+                  results.points.map(p => ({ Name: p.name, X: p.x, Y: p.y, Bearing: p.bearingDeg?.toFixed(4), Distance: p.distance })),
+                  'polar_results.csv'
+                )} className="text-xs bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition">
+                  Download CSV
+                </button>
+              )}
+            </div>
           </div>
           {results.point && (
             <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 p-4 rounded">

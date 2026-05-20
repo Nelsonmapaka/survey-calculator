@@ -307,11 +307,11 @@ export default function ProjectDetail() {
             )}
           </div>
         )
-      case 'Join': return <JoinCalculator points={points} />
-      case 'Polar': return <PolarCalculator points={points} projectId={id} onPointAdded={loadPoints} />
-      case 'Area': return <AreaCalculator points={points} />
-      case 'Map': return <MapView points={points} project={project} projectId={id} onPointAdded={loadPoints} />
-      case 'Convert': return <CoordinateConverter points={points} project={project} />
+      case 'Join': return <JoinCalculator points={points} onShowDiagram={(ids) => { setDiagramPointIds(new Set(ids)); setActiveTab('Diagram') }} />
+      case 'Polar': return <PolarCalculator points={points} projectId={id} onPointAdded={loadPoints} onShowDiagram={(ids) => { setDiagramPointIds(new Set(ids)); setActiveTab('Diagram') }} />
+      case 'Area': return <AreaCalculator points={points} onShowDiagram={(ids) => { setDiagramPointIds(new Set(ids)); setActiveTab('Diagram') }} />
+      case 'Map': return <MapView points={points} project={project} projectId={id} onPointAdded={loadPoints} onShowDiagram={(ids) => { setDiagramPointIds(new Set(ids)); setActiveTab('Diagram') }} />
+      case 'Convert': return <CoordinateConverter points={points} project={project} onShowDiagram={(ids) => { setDiagramPointIds(new Set(ids)); setActiveTab('Diagram') }} />
       case 'Diagram': {
         const diagramPoints = diagramPointIds.size > 0 ? points.filter(p => diagramPointIds.has(p.id)) : points
         return diagramPoints.length < 2
